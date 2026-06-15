@@ -1,9 +1,9 @@
 import { useState } from "react";
-import FileUpload from "../context/FileUpload";
-import ExperimentInfo from "../context/ExperimentInfo";
-import SectionCard from "../context/SectionCard";
-import PreviewPanel from "../context/PreviewPanel";
-import FormatSelector from "../context/FormatSelector";
+import FileUpload from "../Components/FileUpload";
+import ExperimentInfo from "../Components/ExperimentInfo";
+import SectionCard from "../Components/SectionCard";
+import PreviewPanel from "../Components/PreviewPanel";
+import FormatSelector from "../Components/FormatSelector";
 
 const AssignmentGenerator = () => {
     const [experimentName, setExperimentName] = useState("");
