@@ -46,18 +46,27 @@ const regenerateSection = async (req, res) => {
     if (!sectionTitle) {
         return res.status(400).json({ error: "sectionTitle is required." });
     }
+    if (!experimentName) {
+        console.log('ExperimentName is required')
+        return res.status(400).json({ error: "experimentName is required." });
+    }
 
     try {
         const content = await generateSectionContent(
             sectionTitle,
-            experimentName || "Lab Experiment",
-            wordCount || 200
+            experimentName,
+            wordCount || 200,
         );
 
         return res.status(200).json({ content });
     } catch (err) {
-        console.error("[regenerateSection]", err);
-        return res.status(500).json({ error: "Failed to generate content via Gemini." });
+        console.error("FULL ERROR:");
+        console.error(err);
+
+        return res.status(500).json({
+            error: err.message,
+            stack: err.stack,
+        });
     }
 };
 
@@ -75,7 +84,9 @@ const generateAssignment = async (req, res) => {
 
     const includedSections = sections.filter((s) => s.included);
     if (includedSections.length === 0) {
-        return res.status(400).json({ error: "No sections are marked as included." });
+        return res
+            .status(400)
+            .json({ error: "No sections are marked as included." });
     }
 
     let outputPath = null;
@@ -84,15 +95,18 @@ const generateAssignment = async (req, res) => {
         outputPath = await generateAssignmentDocx(
             experimentName || "",
             experimentNumber || "",
-            sections
+            sections,
         );
 
         const filename = path.basename(outputPath);
 
-        res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+        res.setHeader(
+            "Content-Disposition",
+            `attachment; filename="${filename}"`,
+        );
         res.setHeader(
             "Content-Type",
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         );
 
         const fileStream = fs.createReadStream(outputPath);
@@ -107,7 +121,9 @@ const generateAssignment = async (req, res) => {
     } catch (err) {
         console.error("[generateAssignment]", err);
         if (outputPath) deleteFile(outputPath);
-        return res.status(500).json({ error: "Failed to generate the assignment document." });
+        return res
+            .status(500)
+            .json({ error: "Failed to generate the assignment document." });
     }
 };
 

@@ -9,6 +9,20 @@ const { v4: uuidv4 } = require("uuid");
  * @param {string} filePath - absolute path to the uploaded .docx file
  * @returns {Promise<Array>} - array of { id, title, content, words, included }
  */
+
+const extractHeadingAndContent = (paraHtml) => {
+    const match = paraHtml.match(/<(?:strong|b)>(.*?)<\/(?:strong|b)>(.*)/i);
+
+    if (!match) {
+        return null;
+    }
+
+    return {
+        title: stripHtml(match[1]).trim(),
+        content: stripHtml(match[2]).trim(),
+    };
+};
+
 const parseDocxSections = async (filePath) => {
     // Extract raw messages with bold run info using mammoth's raw messages
     const result = await mammoth.extractRawText({ path: filePath });
@@ -17,11 +31,8 @@ const parseDocxSections = async (filePath) => {
     const customResult = await mammoth.convertToHtml(
         { path: filePath },
         {
-            styleMap: [
-                "b => b",
-                "strong => strong",
-            ],
-        }
+            styleMap: ["b => b", "strong => strong"],
+        },
     );
 
     // Parse bold-headed sections from the HTML output
@@ -48,14 +59,19 @@ const extractSectionsFromHtml = (html) => {
     let contentBuffer = [];
 
     for (const para of paragraphs) {
-        if (isEntirelyBold(para)) {
-            // Save previous section
+        if (isSectionHeading(para)) {
             if (currentSection !== null) {
                 sections.push(buildSection(currentSection, contentBuffer));
             }
-            // Start new section
-            currentSection = stripHtml(para).trim();
+
+            const headingData = extractHeadingAndContent(para);
+
+            currentSection = headingData.title;
             contentBuffer = [];
+
+            if (headingData.content) {
+                contentBuffer.push(headingData.content);
+            }
         } else {
             // Accumulate content
             const text = stripHtml(para).trim();
@@ -75,18 +91,13 @@ const extractSectionsFromHtml = (html) => {
  * Returns true if the paragraph's visible text is entirely wrapped in <b> or <strong>.
  * Handles: <b>text</b>, <strong>text</strong>, mixed runs where ALL text is bold.
  */
-const isEntirelyBold = (paraHtml) => {
-    // Remove all bold tags and check if non-bold text remains
-    const withoutBold = paraHtml
-        .replace(/<b>(.*?)<\/b>/gs, "")
-        .replace(/<strong>(.*?)<\/strong>/gs, "");
+const isSectionHeading = (paraHtml) => {
+    const trimmed = paraHtml.trim();
 
-    const remainingText = stripHtml(withoutBold).trim();
-
-    // The original paragraph must have some text
-    const originalText = stripHtml(paraHtml).trim();
-
-    return originalText.length > 0 && remainingText.length === 0;
+    return (
+        trimmed.startsWith("<strong>") ||
+        trimmed.startsWith("<b>")
+    );
 };
 
 /**

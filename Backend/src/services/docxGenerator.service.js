@@ -107,7 +107,7 @@ const generateAssignmentDocx = async (experimentName, experimentNumber, sections
     }
 
     // ── Marks Table ──────────────────────────────────────────────────────────
-    children.push(...buildMarksTable());
+    // children.push(...buildMarksTable());
 
     // ── Build Document ───────────────────────────────────────────────────────
     const doc = new Document({
@@ -142,57 +142,57 @@ const generateAssignmentDocx = async (experimentName, experimentNumber, sections
 /**
  * Builds a simple Faculty Marks table at the bottom of the document.
  */
-const buildMarksTable = () => {
-    const border = { style: BorderStyle.SINGLE, size: 1, color: "000000" };
-    const borders = { top: border, bottom: border, left: border, right: border };
-    const cellMargins = { top: 80, bottom: 80, left: 120, right: 120 };
+// const buildMarksTable = () => {
+//     const border = { style: BorderStyle.SINGLE, size: 1, color: "000000" };
+//     const borders = { top: border, bottom: border, left: border, right: border };
+//     const cellMargins = { top: 80, bottom: 80, left: 120, right: 120 };
 
-    const headerCell = (text) =>
-        new TableCell({
-            borders,
-            margins: cellMargins,
-            shading: { fill: "D9D9D9", type: ShadingType.CLEAR },
-            children: [
-                new Paragraph({
-                    children: [new TextRun({ text, bold: true, size: 22, font: "Arial" })],
-                    alignment: AlignmentType.CENTER,
-                }),
-            ],
-        });
+//     const headerCell = (text) =>
+//         new TableCell({
+//             borders,
+//             margins: cellMargins,
+//             shading: { fill: "D9D9D9", type: ShadingType.CLEAR },
+//             children: [
+//                 new Paragraph({
+//                     children: [new TextRun({ text, bold: true, size: 22, font: "Arial" })],
+//                     alignment: AlignmentType.CENTER,
+//                 }),
+//             ],
+//         });
 
-    const dataCell = (text = "") =>
-        new TableCell({
-            borders,
-            margins: cellMargins,
-            children: [
-                new Paragraph({
-                    children: [new TextRun({ text, size: 22, font: "Arial" })],
-                    alignment: AlignmentType.CENTER,
-                }),
-            ],
-        });
+//     const dataCell = (text = "") =>
+//         new TableCell({
+//             borders,
+//             margins: cellMargins,
+//             children: [
+//                 new Paragraph({
+//                     children: [new TextRun({ text, size: 22, font: "Arial" })],
+//                     alignment: AlignmentType.CENTER,
+//                 }),
+//             ],
+//         });
 
-    const table = new Table({
-        width: { size: 9026, type: WidthType.DXA },
-        columnWidths: [3008, 3009, 3009],
-        rows: [
-            new TableRow({
-                children: [
-                    headerCell("Date"),
-                    headerCell("Grade / Marks"),
-                    headerCell("Faculty Signature"),
-                ],
-            }),
-            new TableRow({
-                children: [dataCell(), dataCell(), dataCell()],
-            }),
-        ],
-    });
+//     const table = new Table({
+//         width: { size: 9026, type: WidthType.DXA },
+//         columnWidths: [3008, 3009, 3009],
+//         rows: [
+//             new TableRow({
+//                 children: [
+//                     headerCell("Date"),
+//                     headerCell("Grade / Marks"),
+//                     headerCell("Faculty Signature"),
+//                 ],
+//             }),
+//             new TableRow({
+//                 children: [dataCell(), dataCell(), dataCell()],
+//             }),
+//         ],
+//     });
 
-    return [
-        new Paragraph({ spacing: { before: 600 } }), // spacer before table
-        table,
-    ];
-};
+//     return [
+//         new Paragraph({ spacing: { before: 600 } }), // spacer before table
+//         table,
+//     ];
+// };
 
 module.exports = { generateAssignmentDocx };

@@ -6,8 +6,8 @@ const SectionCard = ({ section, setSections, experimentName }) => {
             prev.map((item) =>
                 item.id === section.id
                     ? { ...item, words: Number(e.target.value) }
-                    : item
-            )
+                    : item,
+            ),
         );
     };
 
@@ -16,16 +16,23 @@ const SectionCard = ({ section, setSections, experimentName }) => {
             prev.map((item) =>
                 item.id === section.id
                     ? { ...item, content: e.target.value }
-                    : item
-            )
+                    : item,
+            ),
         );
     };
 
     const handleRegenerate = async () => {
+
+        console.log('Btn clicked');
+
+        if(!experimentName){
+            alert('Enter a Experiment Name')
+        }
+        
         setSections((prev) =>
             prev.map((item) =>
-                item.id === section.id ? { ...item, loading: true } : item
-            )
+                item.id === section.id ? { ...item, loading: true } : item,
+            ),
         );
 
         try {
@@ -33,24 +40,29 @@ const SectionCard = ({ section, setSections, experimentName }) => {
                 "http://localhost:5000/api/assignment/regenerate",
                 {
                     sectionTitle: section.title,
-                    experimentName: experimentName || "Lab Experiment",
+                    experimentName: experimentName,
                     wordCount: section.words,
-                }
+                },
             );
 
             setSections((prev) =>
                 prev.map((item) =>
                     item.id === section.id
-                        ? { ...item, content: response.data.content, loading: false }
-                        : item
-                )
+                        ? {
+                              ...item,
+                              content: response.data.content,
+                              loading: false,
+                          }
+                        : item,
+                ),
             );
         } catch (error) {
-            alert("Failed to regenerate section. Please check your API key and try again.");
+            console.log(error);
+
             setSections((prev) =>
                 prev.map((item) =>
-                    item.id === section.id ? { ...item, loading: false } : item
-                )
+                    item.id === section.id ? { ...item, loading: false } : item,
+                ),
             );
         }
     };
@@ -60,13 +72,15 @@ const SectionCard = ({ section, setSections, experimentName }) => {
             prev.map((item) =>
                 item.id === section.id
                     ? { ...item, included: !item.included }
-                    : item
-            )
+                    : item,
+            ),
         );
     };
 
     return (
-        <div className={`border rounded-xl mb-4 ${!section.included ? "opacity-50" : ""}`}>
+        <div
+            className={`border rounded-xl mb-4 ${!section.included ? "opacity-50" : ""}`}
+        >
             <div className="p-4 flex justify-between items-center">
                 <h3 className="font-semibold">{section.title}</h3>
                 <span
