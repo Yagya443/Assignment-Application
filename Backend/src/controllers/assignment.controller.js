@@ -41,26 +41,31 @@ const uploadManual = async (req, res) => {
 // Returns: { content: "..." }
 // ─────────────────────────────────────────────────────────────────────────────
 const regenerateSection = async (req, res) => {
-    const { sectionTitle, experimentName, wordCount } = req.body;
+    const { sectionTitle, experimentName, wordCount, 
+        userTextRequest
+     } =
+        req.body;
 
-    if (!sectionTitle) {
-        return res.status(400).json({ error: "sectionTitle is required." });
+        
+        if (!sectionTitle) {
+            return res.status(400).json({ error: "sectionTitle is required." });
     }
     if (!experimentName) {
-        console.log('ExperimentName is required')
+        console.log("ExperimentName is required");
         return res.status(400).json({ error: "experimentName is required." });
     }
+    // console.log(req.body);
 
     try {
         const content = await generateSectionContent(
             sectionTitle,
             experimentName,
             wordCount || 200,
+            userTextRequest || "",
         );
 
         return res.status(200).json({ content });
     } catch (err) {
-        console.error("FULL ERROR:");
         console.error(err);
 
         return res.status(500).json({
@@ -93,8 +98,8 @@ const generateAssignment = async (req, res) => {
 
     try {
         outputPath = await generateAssignmentDocx(
-            experimentName || "",
-            experimentNumber || "",
+            experimentName,
+            experimentNumber,
             sections,
         );
 

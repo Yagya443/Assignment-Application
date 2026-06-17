@@ -34,7 +34,7 @@ const AssignmentGenerator = () => {
             const response = await axios.post(
                 "http://localhost:5000/api/assignment/generate",
                 { experimentName, experimentNumber, sections },
-                { responseType: "blob" }
+                { responseType: "blob" },
             );
 
             const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -42,7 +42,7 @@ const AssignmentGenerator = () => {
             link.href = url;
             link.setAttribute(
                 "download",
-                `${experimentName || "assignment"}.docx`
+                `${experimentName || "assignment"}.docx`,
             );
             document.body.appendChild(link);
             link.click();
@@ -58,12 +58,12 @@ const AssignmentGenerator = () => {
 
     return (
         <div className="min-h-screen bg-slate-50">
-            <div className="max-w-7xl mx-auto p-6">
+            <div className="max-w-360 mx-auto p-6">
                 <h1 className="text-4xl font-bold text-center mb-8">
                     Assignment Generator
                 </h1>
 
-                <div className="grid lg:grid-cols-5 gap-6">
+                <div className="grid lg:grid-cols-6 gap-6">
                     <div className="lg:col-span-3 space-y-6">
                         <FileUpload
                             setSections={setSections}
@@ -78,7 +78,9 @@ const AssignmentGenerator = () => {
                         />
 
                         <div className="bg-white rounded-xl p-5 shadow-sm">
-                            <h2 className="text-xl font-semibold mb-4">Sections</h2>
+                            <h2 className="text-xl font-semibold mb-4">
+                                Sections
+                            </h2>
 
                             {sections.length === 0 && (
                                 <p className="text-gray-400 text-sm text-center py-8">
@@ -106,11 +108,13 @@ const AssignmentGenerator = () => {
                             disabled={generating}
                             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl disabled:opacity-50 transition"
                         >
-                            {generating ? "Generating..." : "Generate & Download"}
+                            {generating
+                                ? "Generating..."
+                                : "Generate & Download"}
                         </button>
                     </div>
 
-                    <div className="lg:col-span-2">
+                    <div className="lg:col-span-3">
                         <PreviewPanel
                             experimentName={experimentName}
                             experimentNumber={experimentNumber}

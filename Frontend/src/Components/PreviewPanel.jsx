@@ -1,19 +1,13 @@
 const PreviewPanel = ({ experimentName, experimentNumber, sections }) => {
     return (
-        <div
-            className=" bg-white rounded-xl shadow-sm p-5 sticky top-5 "
-        >
+        <div className=" bg-white rounded-xl shadow-sm p-5 sticky top-5 border-2">
             <h2 className="text-xl font-semibold mb-4">Live Preview</h2>
 
             <div className="space-y-6">
-                <div>
+                <div className="">
                     <h3 className="text-center font-bold">
-                        Experiment {experimentNumber}
+                        Experiment {experimentNumber} - {experimentName}
                     </h3>
-
-                    <h2 className="text-center text-xl font-bold">
-                        {experimentName}
-                    </h2>
                 </div>
 
                 {sections.map((section) => (

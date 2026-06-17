@@ -22,19 +22,25 @@ const SectionCard = ({ section, setSections, experimentName }) => {
     };
 
     const handleRegenerate = async () => {
+        // console.log("Rendering:", section.title, section.userTextRequest);
 
-        console.log('Btn clicked');
-
-        if(!experimentName){
-            alert('Enter a Experiment Name')
+        if (!experimentName) {
+            alert("Enter a Experiment Name");
+            return;
         }
-        
+
         setSections((prev) =>
             prev.map((item) =>
                 item.id === section.id ? { ...item, loading: true } : item,
             ),
         );
 
+        console.log({
+            sectionTitle: section.title,
+            experimentName,
+            wordCount: section.words,
+            userTextRequest: section.userTextRequest,
+        });
         try {
             const response = await axios.post(
                 "http://localhost:5000/api/assignment/regenerate",
@@ -42,8 +48,10 @@ const SectionCard = ({ section, setSections, experimentName }) => {
                     sectionTitle: section.title,
                     experimentName: experimentName,
                     wordCount: section.words,
+                    userTextRequest: section.userTextRequest || null,
                 },
             );
+            console.log(section);
 
             setSections((prev) =>
                 prev.map((item) =>
@@ -96,12 +104,12 @@ const SectionCard = ({ section, setSections, experimentName }) => {
 
             <div className="p-4 border-t">
                 <div className="flex justify-between mb-3">
-                    <div className="flex items-center gap-4">
-                        <p className="font-bold">Word Count</p>
+                    <div className="flex items-center gap-2">
+                        <p className="font-bold text-nowrap">Word Count</p>
                         <select
                             value={section.words}
                             onChange={handleWordCountChange}
-                            className="border rounded-lg px-2 py-1 w-24"
+                            className="border rounded-lg px-1 py-0.5 w-18"
                         >
                             <option value={100}>100</option>
                             <option value={200}>200</option>
@@ -110,18 +118,36 @@ const SectionCard = ({ section, setSections, experimentName }) => {
                         </select>
                     </div>
 
+                    <input
+                        placeholder="Want to add a message as well"
+                        className="border text-[12px] w-54 py-1 px-2 rounded-md"
+                        value={section.userTextRequest || ""}
+                        onChange={(e) =>
+                            setSections((prev) =>
+                                prev.map((item) =>
+                                    item.id === section.id
+                                        ? {
+                                              ...item,
+                                              userTextRequest: e.target.value,
+                                          }
+                                        : item,
+                                ),
+                            )
+                        }
+                    />
+                    {/* </div> */}
                     <div className="flex gap-2">
                         <button
                             onClick={handleRegenerate}
                             disabled={section.loading}
-                            className="bg-blue-500 text-white px-4 py-2 rounded-lg disabled:opacity-50"
+                            className="bg-blue-500 text-white px-4 py-0.5 rounded-lg disabled:opacity-50"
                         >
                             {section.loading ? "Generating..." : "Regenerate"}
                         </button>
 
                         <button
                             onClick={handleToggleInclude}
-                            className={`px-4 py-2 rounded-lg border font-medium ${
+                            className={`px-4 py-0.5  rounded-lg border font-medium ${
                                 section.included
                                     ? "border-red-400 text-red-500 hover:bg-red-50"
                                     : "border-green-500 text-green-600 hover:bg-green-50"

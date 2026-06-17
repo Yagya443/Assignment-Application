@@ -17,6 +17,7 @@ const ExperimentInfo = ({
                     <input
                         type="text"
                         value={experimentNumber}
+                        // value='CPU'
                         onChange={(e) => setExperimentNumber(e.target.value)}
                         className=" w-full border rounded-lg p-3 "
                     />
@@ -29,7 +30,8 @@ const ExperimentInfo = ({
 
                     <input
                         type="text"
-                        value={experimentName}
+                        // value={experimentName}
+                        value='CPU Algorithm' 
                         onChange={(e) => setExperimentName(e.target.value)}
                         className=" w-full border rounded-lg p-3 "
                     />

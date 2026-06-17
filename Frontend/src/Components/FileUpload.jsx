@@ -16,7 +16,7 @@ const FileUpload = ({ setSections, setUploadedFileName }) => {
                 formData,
             );
 
-            console.log(response.data);
+            // console.log(response.data.sections);
             setSections(response.data.sections);
         } catch (error) {
             console.error(error);
